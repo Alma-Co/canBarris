@@ -5,14 +5,13 @@ class App {
 
     public express: express.Application;
 
-    // array to hold users
-    users: any[];
+    plants: any[];
 
     constructor() {
         this.express = express();
         this.middleware();
         this.routes();
-        this.users = [{firstName:"fnam1",lastName:"lnam1",userName:"username1"}];
+        this.plants = [{name:"aloe",family:"aloes",description:"aloe vera", water: "once a week", sunlight: "hours of full sun", soil: "well drained"}];
     }
 
     // Configure Express middleware.
@@ -27,29 +26,28 @@ class App {
             res.send("Typescript App works!!!");
         });
         
-        // request to get all the users
-        this.express.get("/users", (req,res,next) => {
+        // request to get all plants
+        this.express.get("/plants", (req,res,next) => {
             console.log("url:::::::"+req.url)
-            res.json(this.users);
+            res.json(this.plants);
         })
 
-        // request to get all the users by userName
-        this.express.get("/users/:userName", (req,res,next) => {
+        // plant by id
+        this.express.get("/plants/:id", (req,res,next) => {
             console.log("url:::::::"+req.url)
-            let user = this.users.filter(function(user){
-                if(req.params.userName === user.userName){
-                    return user;
+            let plant = this.plants.filter(function(plant){
+                if(req.params.id === plant.id){
+                    return plant;
                 }
             })
-            res.json(user);
+            res.json(plant);
         })
 
-        // request to post the user
-        // req.body has object of type {firstName:"fnam1",lastName:"lnam1",userName:"username1"}
-        this.express.post("/user", (req,res,next) => {
+        // request to post a plant
+        this.express.post("/plant", (req,res,next) => {
             console.log("url:::::::"+req.url)
-            this.users.push(req.body);
-            res.json(this.users);
+            this.plants.push(req.body);
+            res.json(this.plants);
         })
     }
 }
