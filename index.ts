@@ -1,16 +1,26 @@
-import App from './app';
-import * as http from "http";
+const express = require('express')
+const db = require('./queries.ts')
+const bodyParser = require('body-parser')
+const app = express()
+const port = 3000
 
-const port = 8000;
+app.use(bodyParser.json())
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+)
 
-  App.set('port', port);
-  const server = http.createServer(App);
-  server.listen(port);
-  
-server.on('listening', function(): void {
-    let addr = server.address();
-    let bind = (typeof addr === 'string') ? `pipe ${addr}` : `port ${addr?.port}`;
-    console.log(`Listening on ${bind}`);
- });
+app.get('/', (request, response) => {
+  response.json({ info: 'Node.js, Express, and Postgres API' })
+})
 
-module.exports = App;
+app.get('/plants', db.getPlants)
+app.get('/plants/:id', db.getPlantById)
+app.post('/plants', db.createPlant)
+app.put('/plants/:id', db.updatePlant)
+app.delete('/plants/:id', db.deletePlant)
+
+app.listen(port, () => {
+  console.log(`App running on port ${port}.`)
+})
