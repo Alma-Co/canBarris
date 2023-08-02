@@ -1,35 +1,57 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import pool from '../manager/db.js';
+import PlantsService from '../service/plantsService.js';
 
 
-class Plants {
-    async getPlants() {
-        let result= await pool.query('SELECT * FROM plants ORDER BY id ASC').catch((err: any) => {throw err});
-        return result.rows;
+class PlantsController {
+
+    public static instance: PlantsController = new this();
+
+    public getAllPlants = async (_req: Request, res: Response) => {
+        try {
+            const plants = await PlantsService.instance.getAllPlants();
+            return res.json(plants);
+        } catch (err) {
+            res.send(err);
+        }
+    }    
+    
+    public getPlantById = async (req: Request, res: Response) => {
+        try {
+            const plant = await PlantsService.instance.getPlantById(req.params.id);
+            return res.json(plant);
+        } catch (err) {
+            res.send(err);
+        }
     }
 
-    async getPlantById(id: string) {
-        let results = await pool.query('SELECT * FROM plants WHERE id = $1', [parseInt(id)]).catch((err: any) => {throw err});
-        return results.rows;
+    public createPlant = async (req: Request, res: Response) => {
+        try {
+            const result = await PlantsService.instance.createPlant(req.body);
+            return res.json(result);
+        } catch (err) {
+            res.send(err);
+        }
     }
 
-    async createPlant(req: { name: any; type: any; light: any; water: any; comment: any; }) {
-        const { name, type, light, water, comment } = req;
-       await pool.query('INSERT INTO plants (name, type, light, water, comment) VALUES ($1, $2, $3, $4, $5) RETURNING *', [name, type, light, water, comment]).catch((err: any) => {throw err});
-        return `Plant created successfully!`
+    public updatePlant = async (req: Request, res: Response) => {
+        try{
+            const result = await PlantsService.instance.updatePlant(req.body);
+            return res.json(result);
+        } catch (err) {
+            res.send(err);
+        }
     }
 
-    async updatePlant(req: { id: string, name: any; type: any; light: any; water: any; comment: any; }) {
-        const { id, name, type, light, water, comment } = req;
-        await pool.query('UPDATE plants SET name = $1 type = $2 light = $3 water = $4 comment = $5 WHERE id = $6', [name, type, light, water, comment, parseInt(id)]).catch((err: any) => {throw err});
-        return `User modified with ID: ${id}`;
-    }
-
-    async deletePlant(id: string) {
-        await pool.query('DELETE FROM plants WHERE id = $1', [parseInt(id)]).catch((err: any) => {throw err});
-        return `Plant with ID: ${id} deleted`;
+    public deletePlant = async (req: Request, res: Response) => {
+        try {
+            const result = await PlantsService.instance.deletePlant(req.params.id);
+            return res.json(result);
+        } catch (err) {
+            res.send(err);
+        }
     }
 
 }
 
-export default Plants;
+export default PlantsController;
