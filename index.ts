@@ -1,7 +1,6 @@
 import express, { Response, Request } from "express";
 import bodyParser from "body-parser"
 import router from "./src/routes/plantsRouter.js";
-import Plants from "./src/controllers/plantsController.js";
 
 const app = express()
 const port = 3000

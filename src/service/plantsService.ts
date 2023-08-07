@@ -1,5 +1,12 @@
 import PlantsRepository from "../repository/plantsRepository.js";
-
+type Request = {
+    id?: string;
+    name: string;
+    type: string;
+    light: string;
+    water: string;
+    comment: string;
+}
 class PlantsService {
 
     public static instance: PlantsService = new this();
@@ -8,9 +15,9 @@ class PlantsService {
 
     public getPlantById = (id: string) => PlantsRepository.instance.getPlantById(id);
 
-    public createPlant = (req: { name: string; type: string; light: string; water: string; comment: string; }) => PlantsRepository.instance.createPlant(req);
+    public createPlant = (req: Request) => PlantsRepository.instance.createPlant(req);
 
-    public updatePlant = (req: { id: string, name: string; type: string; light: string; water: string; comment: string; }) => PlantsRepository.instance.updatePlant(req);
+    public updatePlant = (req: Request) => PlantsRepository.instance.updatePlant(req);
 
     public deletePlant = (id: string) => PlantsRepository.instance.deletePlant(id);
 
